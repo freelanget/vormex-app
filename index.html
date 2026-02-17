@@ -173,7 +173,7 @@
             <div class="profile-row">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info">
-                    <div class="profile-name" id="userName">Пользователь</div>
+                    <div class="profile-name" id="userName">Загрузка...</div>
                     <div class="profile-detail">💰 Баланс: <span id="balance">0</span> ₽</div>
                     <div class="profile-detail">🎁 Тариф: <span id="tariff">Бесплатный</span></div>
                 </div>
@@ -277,15 +277,20 @@
         if (tg) {
             tg.expand();
             tg.ready();
+            
+            // Запрашиваем данные пользователя при загрузке
+            tg.sendData(JSON.stringify({action: 'get_user_data'}));
         }
 
-        function sendAction(action) {
+        // Функция для отправки действий в бота
+        function sendAction(action, data = {}) {
             if (tg) {
-                tg.sendData(JSON.stringify({action: action}));
+                tg.sendData(JSON.stringify({action: action, ...data}));
                 tg.close();
             }
         }
 
+        // Модальные окна
         function openReviewsModal() {
             document.getElementById('reviewModal').style.display = 'flex';
         }
@@ -317,21 +322,47 @@
             }
         }
 
-        function sendAction(action, data = {}) {
-            if (tg) {
-                tg.sendData(JSON.stringify({action: action, ...data}));
-                tg.close();
-            }
+        // Функция обновления интерфейса с реальными данными
+        function updateUserData(data) {
+            document.getElementById('userName').innerText = data.first_name || 'Пользователь';
+            document.getElementById('balance').innerText = data.balance;
+            
+            // Название тарифа
+            const tariffNames = {
+                'free': '🆓 Бесплатный',
+                'start': '🔹 Старт',
+                'pro': '🔥 Про',
+                'vip': '👑 VIP'
+            };
+            document.getElementById('tariff').innerText = tariffNames[data.tariff] || data.tariff;
+            
+            // Лимиты
+            document.getElementById('videoUsed').innerText = data.video_used;
+            document.getElementById('videoLimit').innerText = data.video_limit;
+            document.getElementById('videoProgress').style.width = (data.video_used / data.video_limit * 100) + '%';
+            
+            document.getElementById('premiumUsed').innerText = data.premium_used;
+            document.getElementById('premiumLimit').innerText = data.premium_limit;
+            document.getElementById('premiumProgress').style.width = (data.premium_used / data.premium_limit * 100) + '%';
+            
+            document.getElementById('photoUsed').innerText = data.photo_used;
+            document.getElementById('photoLimit').innerText = data.photo_limit;
+            document.getElementById('photoProgress').style.width = (data.photo_used / data.photo_limit * 100) + '%';
+            
+            document.getElementById('gptUsed').innerText = data.gpt_used;
+            document.getElementById('gptLimit').innerText = data.gpt_limit;
+            document.getElementById('gptProgress').style.width = (data.gpt_used / data.gpt_limit * 100) + '%';
         }
 
-        // Функция для обновления данных из бота
-        window.onload = function() {
-            if (tg) {
-                tg.onEvent('viewportChanged', function() {
-                    // Здесь можно запросить данные у бота
-                });
-            }
-        };
+        // Слушаем сообщения от бота
+        window.addEventListener('message', function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.action === 'update_user_data') {
+                    updateUserData(data);
+                }
+            } catch(e) {}
+        });
     </script>
 </body>
 </html>
