@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VORMEX AI - Личный кабинет</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -23,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* ГЛАВНАЯ КАРТОЧКА */
         .main-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -37,7 +37,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
         }
 
         .logo {
@@ -59,59 +58,64 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* ПРОФИЛЬ */
         .profile-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 24px;
             padding: 24px;
             margin: 16px 0;
-            cursor: pointer;
-            transition: transform 0.2s;
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        .profile-card:hover {
-            transform: scale(0.98);
-        }
+
         .profile-row {
             display: flex;
             align-items: center;
             gap: 16px;
+            margin-bottom: 16px;
         }
+
         .profile-avatar {
             font-size: 48px;
         }
+
         .profile-info {
             flex: 1;
         }
+
         .profile-name {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 4px;
         }
+
         .profile-detail {
             font-size: 14px;
             opacity: 0.9;
             margin-bottom: 2px;
         }
+
         .stats {
             margin-top: 16px;
         }
+
         .stat-item {
             margin-bottom: 12px;
         }
+
         .stat-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 4px;
             font-size: 14px;
         }
+
         .progress-bar {
             height: 8px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             overflow: hidden;
         }
+
         .progress-fill {
             height: 100%;
             border-radius: 10px;
@@ -120,13 +124,13 @@
             transition: width 0.5s;
         }
 
-        /* СЕТКА ФУНКЦИЙ */
         .functions-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin: 16px 0;
         }
+
         .function-item {
             background: white;
             border-radius: 20px;
@@ -136,14 +140,17 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .function-item:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
+
         .function-emoji {
             font-size: 32px;
             margin-bottom: 8px;
         }
+
         .function-title {
             font-size: 14px;
             font-weight: 500;
@@ -153,7 +160,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- ШАПКА -->
         <div class="main-card">
             <div class="header">
                 <div class="logo">
@@ -163,8 +169,7 @@
             </div>
         </div>
 
-        <!-- ПРОФИЛЬ (КРУПНО) -->
-        <div class="profile-card" onclick="openProfile()">
+        <div class="profile-card">
             <div class="profile-row">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info">
@@ -214,29 +219,28 @@
             </div>
         </div>
 
-        <!-- СЕТКА ФУНКЦИЙ -->
         <div class="functions-grid">
-            <div class="function-item" onclick="openPay()">
+            <div class="function-item" onclick="sendAction('open_pay')">
                 <div class="function-emoji">💰</div>
                 <div class="function-title">Пополнить</div>
             </div>
-            <div class="function-item" onclick="openTariffs()">
+            <div class="function-item" onclick="sendAction('open_tariffs')">
                 <div class="function-emoji">🎁</div>
                 <div class="function-title">Тарифы</div>
             </div>
-            <div class="function-item" onclick="openReferrals()">
+            <div class="function-item" onclick="sendAction('open_referrals')">
                 <div class="function-emoji">👥</div>
                 <div class="function-title">Рефералы</div>
             </div>
-            <div class="function-item" onclick="openHistory()">
+            <div class="function-item" onclick="sendAction('open_history')">
                 <div class="function-emoji">📊</div>
                 <div class="function-title">История</div>
             </div>
-            <div class="function-item" onclick="openReviews()">
+            <div class="function-item" onclick="sendAction('open_reviews')">
                 <div class="function-emoji">⭐</div>
                 <div class="function-title">Отзывы</div>
             </div>
-            <div class="function-item" onclick="openSupport()">
+            <div class="function-item" onclick="sendAction('open_support')">
                 <div class="function-emoji">📞</div>
                 <div class="function-title">Поддержка</div>
             </div>
@@ -244,17 +248,12 @@
     </div>
 
     <script>
-        // Инициализация Telegram Web App
-        let tg = window.Telegram?.WebApp || { 
-            initDataUnsafe: { user: { id: 7826120989 } },
-            sendData: function(data) { console.log('Send:', data); },
-            close: function() { console.log('Close'); }
-        };
-        
-        tg.expand();
-        tg.ready();
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+        }
 
-        // Тестовые данные (будут заменены реальными от бота)
         const userData = {
             id: 7826120989,
             name: 'Кристина',
@@ -276,7 +275,6 @@
             }
         };
 
-        // Обновить интерфейс
         function updateUI() {
             document.getElementById('balance').innerText = userData.balance.toLocaleString();
             document.getElementById('tariff').innerText = userData.tariff;
@@ -299,43 +297,15 @@
             document.getElementById('gptProgress').style.width = (userData.used.gpt / userData.limits.gpt * 100) + '%';
         }
 
-        // Функции для отправки в бота
-        function openProfile() {
-            tg.sendData(JSON.stringify({action: 'open_profile'}));
-            tg.close();
-        }
-        
-        function openPay() {
-            tg.sendData(JSON.stringify({action: 'open_pay'}));
-            tg.close();
-        }
-        
-        function openTariffs() {
-            tg.sendData(JSON.stringify({action: 'open_tariffs'}));
-            tg.close();
-        }
-        
-        function openReferrals() {
-            tg.sendData(JSON.stringify({action: 'open_referrals'}));
-            tg.close();
-        }
-        
-        function openHistory() {
-            tg.sendData(JSON.stringify({action: 'open_history'}));
-            tg.close();
-        }
-        
-        function openReviews() {
-            tg.sendData(JSON.stringify({action: 'open_reviews'}));
-            tg.close();
-        }
-        
-        function openSupport() {
-            tg.sendData(JSON.stringify({action: 'open_support'}));
-            tg.close();
+        function sendAction(action) {
+            if (tg) {
+                tg.sendData(JSON.stringify({action: action}));
+                tg.close();
+            } else {
+                alert(`Действие: ${action}`);
+            }
         }
 
-        // Загрузить данные при старте
         window.onload = function() {
             updateUI();
         };
