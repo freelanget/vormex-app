@@ -32,10 +32,16 @@
         tg.expand();
         
         function test() {
-            alert('Кнопка нажата! Отправляем данные...');
-            tg.sendData(JSON.stringify({action: 'test'}));
-            // НЕ закрываем!
-        }
+    alert('1. Функция test вызвана');
+    
+    if (tg) {
+        alert('2. Telegram Web App есть');
+        tg.sendData(JSON.stringify({action: 'test'}));
+        alert('3. Данные отправлены');
+    } else {
+        alert('2. Ошибка: нет Telegram Web App');
+    }
+}
         
         function closeApp() {
             tg.close();
