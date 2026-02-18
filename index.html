@@ -317,13 +317,15 @@
             }
         }
 
-        // Запрашиваем данные при загрузке
-        if (tg) {
-            setTimeout(() => {
-                sendAction('get_user_data');
-            }, 500);
-        }
-
+       // Запрашиваем данные при загрузке (НО НЕ ЗАКРЫВАЕМ)
+if (tg) {
+    // Просто логируем, но не отправляем автоматически
+    console.log('Mini App загружен');
+    
+    // Можно отправить запрос данных без закрытия
+    tg.sendData(JSON.stringify({action: 'get_user_data'}));
+    // НЕ закрываем приложение!
+}
         // Функция обновления данных (будет вызываться из бота)
         window.updateUserData = function(data) {
             document.getElementById('userName').innerText = data.first_name || 'Пользователь';
