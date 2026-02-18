@@ -1,371 +1,96 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VORMEX AI - Личный кабинет</title>
+    <meta charset="utf-8">
+    <title>VORMEX AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 16px;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-icon {
-            font-size: 32px;
-        }
-
-        .logo-text {
-            font-weight: bold;
-            font-size: 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .profile-card {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: 24px;
-            padding: 24px;
-            margin: 16px 0;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            min-height: 100vh;
         }
-
-        .profile-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .profile-avatar {
-            font-size: 48px;
-        }
-
-        .profile-info {
-            flex: 1;
-        }
-
-        .profile-name {
-            font-size: 20px;
+        button {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .profile-detail {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 2px;
-        }
-
-        .stats {
-            margin-top: 16px;
-        }
-
-        .stat-item {
-            margin-bottom: 12px;
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 10px;
-            background: white;
-            width: 0%;
-            transition: width 0.5s;
-        }
-
-        .functions-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .function-item {
-            background: white;
-            border-radius: 20px;
-            padding: 16px 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             cursor: pointer;
-            transition: all 0.2s;
+            width: 200px;
         }
-
-        .function-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        button:hover {
+            transform: scale(0.95);
         }
-
-        .function-emoji {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .function-title {
+        #log {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 500;
-            color: #333;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-card">
-            <div class="header">
-                <div class="logo">
-                    <span class="logo-icon">🚀</span>
-                    <span class="logo-text">VORMEX AI</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-card">
-            <div class="profile-row">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-info">
-                    <div class="profile-name" id="userName">Загрузка...</div>
-                    <div class="profile-detail">💰 Баланс: <span id="balance">0</span> ₽</div>
-                    <div class="profile-detail">🎁 Тариф: <span id="tariff">Бесплатный</span></div>
-                </div>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-header">
-                        <span>🎬 Обычные видео</span>
-                        <span><span id="videoUsed">0</span>/<span id="videoLimit">3</span></span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="videoProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-header">
-                        <span>✨ Премиум видео</span>
-                        <span><span id="premiumUsed">0</span>/<span id="premiumLimit">0</span></span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="premiumProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-header">
-                        <span>🎨 Фото</span>
-                        <span><span id="photoUsed">0</span>/<span id="photoLimit">5</span></span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="photoProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-header">
-                        <span>✍️ GPT</span>
-                        <span><span id="gptUsed">0</span>/<span id="gptLimit">10</span></span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="gptProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="functions-grid">
-            <div class="function-item" onclick="sendAction('open_pay')">
-                <div class="function-emoji">💰</div>
-                <div class="function-title">Пополнить</div>
-            </div>
-            <div class="function-item" onclick="sendAction('open_tariffs')">
-                <div class="function-emoji">🎁</div>
-                <div class="function-title">Тарифы</div>
-            </div>
-            <div class="function-item" onclick="sendAction('open_referrals')">
-                <div class="function-emoji">👥</div>
-                <div class="function-title">Рефералы</div>
-            </div>
-            <div class="function-item" onclick="sendAction('open_history')">
-                <div class="function-emoji">📊</div>
-                <div class="function-title">История</div>
-            </div>
-            <div class="function-item" onclick="openReviewsModal()">
-                <div class="function-emoji">⭐</div>
-                <div class="function-title">Отзывы</div>
-            </div>
-            <div class="function-item" onclick="openSupportModal()">
-                <div class="function-emoji">📞</div>
-                <div class="function-title">Поддержка</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для отзыва -->
-    <div id="reviewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-        <div style="background:white; padding:24px; border-radius:24px; max-width:300px; margin:20px;">
-            <h3 style="margin-bottom:16px;">⭐ Оставить отзыв</h3>
-            <textarea id="reviewText" placeholder="Ваш отзыв..." style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px; min-height:100px;"></textarea>
-            <div style="display:flex; gap:8px;">
-                <button onclick="sendReview()" style="flex:2; background:#667eea; color:white; border:none; padding:12px; border-radius:12px;">Отправить</button>
-                <button onclick="closeReviewModal()" style="flex:1; background:#f0f0f0; border:none; padding:12px; border-radius:12px;">❌</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для поддержки -->
-    <div id="supportModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-        <div style="background:white; padding:24px; border-radius:24px; max-width:300px; margin:20px;">
-            <h3 style="margin-bottom:16px;">📞 Связаться с поддержкой</h3>
-            <input id="supportName" placeholder="Ваше имя" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px;">
-            <textarea id="supportMessage" placeholder="Опишите проблему..." style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px; min-height:100px;"></textarea>
-            <div style="display:flex; gap:8px;">
-                <button onclick="sendSupport()" style="flex:2; background:#667eea; color:white; border:none; padding:12px; border-radius:12px;">Отправить</button>
-                <button onclick="closeSupportModal()" style="flex:1; background:#f0f0f0; border:none; padding:12px; border-radius:12px;">❌</button>
-            </div>
-        </div>
-    </div>
+    <h1>🚀 VORMEX AI</h1>
+    <p>Тестирование связи с ботом</p>
+    
+    <button onclick="sendData('open_tariffs')">📋 ТАРИФЫ</button>
+    <button onclick="sendData('open_pay')">💰 ПОПОЛНИТЬ</button>
+    <button onclick="sendData('open_referrals')">👥 РЕФЕРАЛЫ</button>
+    <button onclick="sendData('open_history')">📊 ИСТОРИЯ</button>
+    
+    <div id="log"></div>
 
     <script>
-        // Инициализация Telegram Web App
+        // Функция для записи в лог на экране
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = message + '<br>' + logDiv.innerHTML;
+        }
+
+        // Проверяем Telegram Web App
+        log('🔍 Проверяем Telegram Web App...');
+        
         let tg = window.Telegram?.WebApp;
         
         if (tg) {
             tg.expand();
             tg.ready();
-            console.log('✅ Telegram Web App инициализирован');
+            log('✅ Telegram Web App найден!');
+            log('Версия: ' + tg.version);
         } else {
-            console.log('❌ Telegram Web App не найден');
+            log('❌ Telegram Web App НЕ найден!');
         }
 
-        // Функция отправки данных в бота
-        function sendAction(action, data = {}) {
-            console.log('🔵 Отправляем действие:', action, data);
+        // Функция отправки данных
+        function sendData(action) {
+            log('🔵 Нажата кнопка: ' + action);
             
             if (tg && tg.sendData) {
-                const payload = JSON.stringify({action: action, ...data});
-                console.log('📦 Payload:', payload);
-                tg.sendData(payload);
-                tg.close();
+                const data = JSON.stringify({action: action});
+                log('📤 Отправляем: ' + data);
+                
+                try {
+                    tg.sendData(data);
+                    log('✅ Данные отправлены!');
+                    setTimeout(() => {
+                        tg.close();
+                    }, 500);
+                } catch (e) {
+                    log('❌ Ошибка отправки: ' + e);
+                }
             } else {
-                alert('Ошибка: нет соединения с Telegram');
+                log('❌ Нет tg.sendData!');
+                alert('Тестовый режим: ' + action);
             }
         }
-
-        // Модальные окна
-        function openReviewsModal() {
-            document.getElementById('reviewModal').style.display = 'flex';
-        }
-
-        function closeReviewModal() {
-            document.getElementById('reviewModal').style.display = 'none';
-        }
-
-        function sendReview() {
-            const text = document.getElementById('reviewText').value;
-            if (text.trim()) {
-                sendAction('send_review', {text: text});
-            }
-        }
-
-        function openSupportModal() {
-            document.getElementById('supportModal').style.display = 'flex';
-        }
-
-        function closeSupportModal() {
-            document.getElementById('supportModal').style.display = 'none';
-        }
-
-        function sendSupport() {
-            const name = document.getElementById('supportName').value;
-            const message = document.getElementById('supportMessage').value;
-            if (message.trim()) {
-                sendAction('send_support', {name: name, message: message});
-            }
-        }
-
-        // Запрашиваем данные при загрузке
-        if (tg) {
-            setTimeout(() => {
-                sendAction('get_user_data');
-            }, 500);
-        }
-
-        // Функция обновления интерфейса (будет вызываться из бота)
-        window.updateUserData = function(data) {
-            document.getElementById('userName').innerText = data.first_name || 'Пользователь';
-            document.getElementById('balance').innerText = data.balance;
-            
-            const tariffNames = {
-                'free': '🆓 Бесплатный',
-                'start': '🔹 Старт',
-                'pro': '🔥 Про',
-                'vip': '👑 VIP'
-            };
-            document.getElementById('tariff').innerText = tariffNames[data.tariff] || data.tariff;
-            
-            document.getElementById('videoUsed').innerText = data.video_used;
-            document.getElementById('videoLimit').innerText = data.video_limit;
-            document.getElementById('videoProgress').style.width = (data.video_used / data.video_limit * 100) + '%';
-            
-            document.getElementById('premiumUsed').innerText = data.premium_used;
-            document.getElementById('premiumLimit').innerText = data.premium_limit;
-            document.getElementById('premiumProgress').style.width = (data.premium_used / data.premium_limit * 100) + '%';
-            
-            document.getElementById('photoUsed').innerText = data.photo_used;
-            document.getElementById('photoLimit').innerText = data.photo_limit;
-            document.getElementById('photoProgress').style.width = (data.photo_used / data.photo_limit * 100) + '%';
-            
-            document.getElementById('gptUsed').innerText = data.gpt_used;
-            document.getElementById('gptLimit').innerText = data.gpt_limit;
-            document.getElementById('gptProgress').style.width = (data.gpt_used / data.gpt_limit * 100) + '%';
-        };
     </script>
 </body>
 </html>
