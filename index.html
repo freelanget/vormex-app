@@ -4,92 +4,20 @@
     <meta charset="utf-8">
     <title>VORMEX AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-        }
-        button {
-            background: white;
-            color: #764ba2;
-            border: none;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 200px;
-        }
-        button:hover {
-            transform: scale(0.95);
-        }
-        #log {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            font-size: 14px;
-        }
-    </style>
 </head>
-<body>
+<body style="text-align:center; padding:50px; font-family:Arial">
     <h1>🚀 VORMEX AI</h1>
-    <p>Тестирование связи с ботом</p>
+    <p>Нажми кнопку</p>
     
-    <button onclick="sendData('open_tariffs')">📋 ТАРИФЫ</button>
-    <button onclick="sendData('open_pay')">💰 ПОПОЛНИТЬ</button>
-    <button onclick="sendData('open_referrals')">👥 РЕФЕРАЛЫ</button>
-    <button onclick="sendData('open_history')">📊 ИСТОРИЯ</button>
+    <button onclick="sendData()" style="padding:20px; font-size:20px">ТЕСТ</button>
     
-    <div id="log"></div>
-
     <script>
-        // Функция для записи в лог на экране
-        function log(message) {
-            const logDiv = document.getElementById('log');
-            logDiv.innerHTML = message + '<br>' + logDiv.innerHTML;
-        }
-
-        // Проверяем Telegram Web App
-        log('🔍 Проверяем Telegram Web App...');
+        let tg = Telegram.WebApp;
+        tg.expand();
         
-        let tg = window.Telegram?.WebApp;
-        
-        if (tg) {
-            tg.expand();
-            tg.ready();
-            log('✅ Telegram Web App найден!');
-            log('Версия: ' + tg.version);
-        } else {
-            log('❌ Telegram Web App НЕ найден!');
-        }
-
-        // Функция отправки данных
-        function sendData(action) {
-            log('🔵 Нажата кнопка: ' + action);
-            
-            if (tg && tg.sendData) {
-                const data = JSON.stringify({action: action});
-                log('📤 Отправляем: ' + data);
-                
-                try {
-                    tg.sendData(data);
-                    log('✅ Данные отправлены!');
-                    setTimeout(() => {
-                        tg.close();
-                    }, 500);
-                } catch (e) {
-                    log('❌ Ошибка отправки: ' + e);
-                }
-            } else {
-                log('❌ Нет tg.sendData!');
-                alert('Тестовый режим: ' + action);
-            }
+        function sendData() {
+            tg.sendData(JSON.stringify({test: "hello"}));
+            tg.close();
         }
     </script>
 </body>
