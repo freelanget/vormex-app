@@ -1,57 +1,496 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>VORMEX AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VORMEX AI - Личный кабинет</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
-        button {
-            padding: 20px 40px;
+
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0b2e 50%, #0d0b1a 100%);
+            min-height: 100vh;
+            padding: 16px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ГЛАВНАЯ КАРТОЧКА */
+        .main-card {
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 32px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            filter: drop-shadow(0 0 10px #8a2be2);
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 24px;
+            background: linear-gradient(135deg, #9370db, #4a90e2, #8a2be2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        /* ПРОФИЛЬ */
+        .profile-card {
+            background: linear-gradient(145deg, #0f0f1a, #1a1030);
+            border: 1px solid #2a1a3a;
+            border-radius: 24px;
+            padding: 24px;
+            margin: 16px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(138,43,226,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-avatar {
+            font-size: 48px;
+            filter: drop-shadow(0 0 15px #8a2be2);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
             font-size: 20px;
-            background: white;
-            color: #764ba2;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 10px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #fff, #b19cd9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-detail {
+            font-size: 14px;
+            color: #b8b8d0;
+            margin-bottom: 2px;
+        }
+
+        .profile-detail span {
+            color: #8a8aff;
             font-weight: bold;
         }
-        button:hover {
-            transform: scale(0.95);
+
+        .stats {
+            margin-top: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            margin-bottom: 12px;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: #c0c0e0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #2a1a3a;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #8a2be2, #4a90e2, #00bfff);
+            width: 0%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px #4a90e2;
+        }
+
+        /* СЕТКА ФУНКЦИЙ */
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .function-item {
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid #2a1a3a;
+            border-radius: 20px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .function-item:hover {
+            transform: translateY(-4px);
+            border-color: #8a2be2;
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .function-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 8px #8a2be2);
+        }
+
+        .function-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #d0d0ff;
+        }
+
+        /* МОДАЛЬНЫЕ ОКНА */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #0f0f1a, #1a1030);
+            border: 1px solid #8a2be2;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 300px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff, #8a8aff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #2a1a3a;
+            margin-bottom: 12px;
+            background: rgba(10, 10, 20, 0.9);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .modal-content input:focus,
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: #8a2be2;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        .modal-content button {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-content button.primary {
+            flex: 2;
+            background: linear-gradient(135deg, #8a2be2, #4a90e2);
+            color: white;
+        }
+
+        .modal-content button.primary:hover {
+            transform: scale(0.98);
+            box-shadow: 0 0 20px #8a2be2;
+        }
+
+        .modal-content button.secondary {
+            flex: 1;
+            background: #2a1a3a;
+            color: #b8b8d0;
+            border: 1px solid #3a2a4a;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
-    <h1>🚀 VORMEX AI</h1>
-    <button onclick="test()">НАЖМИ МЕНЯ</button>
-    <button onclick="closeApp()">ЗАКРЫТЬ</button>
+    <div class="container">
+        <!-- ШАПКА -->
+        <div class="main-card">
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">VORMEX AI</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРОФИЛЬ -->
+        <div class="profile-card">
+            <div class="profile-row">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="userName">Загрузка...</div>
+                    <div class="profile-detail">💰 Баланс: <span id="balance">0</span> ₽</div>
+                    <div class="profile-detail">🎁 Тариф: <span id="tariff">Бесплатный</span></div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-header">
+                        <span>🎬 Обычные видео</span>
+                        <span><span id="videoUsed">0</span>/<span id="videoLimit">3</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="videoProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-header">
+                        <span>✨ Премиум видео</span>
+                        <span><span id="premiumUsed">0</span>/<span id="premiumLimit">0</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="premiumProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-header">
+                        <span>🎨 Фото</span>
+                        <span><span id="photoUsed">0</span>/<span id="photoLimit">5</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="photoProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-header">
+                        <span>✍️ GPT</span>
+                        <span><span id="gptUsed">0</span>/<span id="gptLimit">10</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="gptProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЕТКА ФУНКЦИЙ -->
+        <div class="functions-grid">
+            <div class="function-item" onclick="sendAction('open_pay')">
+                <div class="function-emoji">💰</div>
+                <div class="function-title">Пополнить</div>
+            </div>
+            <div class="function-item" onclick="sendAction('open_tariffs')">
+                <div class="function-emoji">🎁</div>
+                <div class="function-title">Тарифы</div>
+            </div>
+            <div class="function-item" onclick="sendAction('open_referrals')">
+                <div class="function-emoji">👥</div>
+                <div class="function-title">Рефералы</div>
+            </div>
+            <div class="function-item" onclick="sendAction('open_history')">
+                <div class="function-emoji">📊</div>
+                <div class="function-title">История</div>
+            </div>
+            <div class="function-item" onclick="openReviewsModal()">
+                <div class="function-emoji">⭐</div>
+                <div class="function-title">Отзывы</div>
+            </div>
+            <div class="function-item" onclick="openSupportModal()">
+                <div class="function-emoji">📞</div>
+                <div class="function-title">Поддержка</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для отзыва -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <h3>⭐ Оставить отзыв</h3>
+            <textarea id="reviewText" placeholder="Ваш отзыв..." rows="4"></textarea>
+            <div class="button-group">
+                <button class="primary" onclick="sendReview()">Отправить</button>
+                <button class="secondary" onclick="closeReviewModal()">❌</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для поддержки -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <h3>📞 Связаться с поддержкой</h3>
+            <input id="supportName" placeholder="Ваше имя">
+            <textarea id="supportMessage" placeholder="Опишите проблему..." rows="4"></textarea>
+            <div class="button-group">
+                <button class="primary" onclick="sendSupport()">Отправить</button>
+                <button class="secondary" onclick="closeSupportModal()">❌</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let tg = Telegram.WebApp;
-        tg.expand();
-        
-        function test() {
-            alert('1. Функция test вызвана');
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
             
+            // Устанавливаем цвета под твою тему
+            tg.setHeaderColor('#0a0a0f');
+            tg.setBackgroundColor('#0a0a0f');
+        }
+
+        function sendAction(action, data = {}) {
             if (tg) {
-                alert('2. Telegram Web App есть');
-                tg.sendData(JSON.stringify({action: 'test'}));
-                alert('3. Данные отправлены');
-            } else {
-                alert('2. Ошибка: нет Telegram Web App');
+                tg.sendData(JSON.stringify({action: action, ...data}));
+                tg.close();
             }
         }
-        
-        function closeApp() {
-            tg.close();
+
+        // Модальные окна
+        function openReviewsModal() {
+            document.getElementById('reviewModal').style.display = 'flex';
         }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+
+        function sendReview() {
+            const text = document.getElementById('reviewText').value;
+            if (text.trim()) {
+                sendAction('send_review', {text: text});
+            }
+        }
+
+        function openSupportModal() {
+            document.getElementById('supportModal').style.display = 'flex';
+        }
+
+        function closeSupportModal() {
+            document.getElementById('supportModal').style.display = 'none';
+        }
+
+        function sendSupport() {
+            const name = document.getElementById('supportName').value;
+            const message = document.getElementById('supportMessage').value;
+            if (message.trim()) {
+                sendAction('send_support', {name: name, message: message});
+            }
+        }
+
+        // Запрос данных пользователя
+        if (tg) {
+            setTimeout(() => {
+                sendAction('get_user_data');
+            }, 500);
+        }
+
+        // Обновление данных
+        window.updateUserData = function(data) {
+            document.getElementById('userName').innerText = data.first_name || 'Пользователь';
+            document.getElementById('balance').innerText = data.balance;
+            
+            const tariffNames = {
+                'free': '🆓 Бесплатный',
+                'start': '🔹 Старт',
+                'pro': '🔥 Про',
+                'vip': '👑 VIP'
+            };
+            document.getElementById('tariff').innerText = tariffNames[data.tariff] || data.tariff;
+            
+            document.getElementById('videoUsed').innerText = data.video_used;
+            document.getElementById('videoLimit').innerText = data.video_limit;
+            document.getElementById('videoProgress').style.width = (data.video_used / data.video_limit * 100) + '%';
+            
+            document.getElementById('premiumUsed').innerText = data.premium_used;
+            document.getElementById('premiumLimit').innerText = data.premium_limit;
+            document.getElementById('premiumProgress').style.width = (data.premium_used / data.premium_limit * 100) + '%';
+            
+            document.getElementById('photoUsed').innerText = data.photo_used;
+            document.getElementById('photoLimit').innerText = data.photo_limit;
+            document.getElementById('photoProgress').style.width = (data.photo_used / data.photo_limit * 100) + '%';
+            
+            document.getElementById('gptUsed').innerText = data.gpt_used;
+            document.getElementById('gptLimit').innerText = data.gpt_limit;
+            document.getElementById('gptProgress').style.width = (data.gpt_used / data.gpt_limit * 100) + '%';
+        };
     </script>
 </body>
 </html>
