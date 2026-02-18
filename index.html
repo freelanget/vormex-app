@@ -406,11 +406,16 @@
         if (tg) {
             tg.expand();
             tg.ready();
+            console.log('Telegram Web App инициализирован');
         }
 
         function sendAction(action, data = {}) {
+            console.log('Отправка действия:', action, data);
             if (tg) {
                 tg.sendData(JSON.stringify({action: action, ...data}));
+                // НЕ закрываем приложение
+            } else {
+                alert('Ошибка: нет Telegram Web App');
             }
         }
 
@@ -448,29 +453,16 @@
             }
         }
 
-        // Запрос данных при загрузке
-        if (tg) {
-            setTimeout(() => {
-                sendAction('get_user_data');
-            }, 500);
-        }
+        // УБИРАЕМ АВТОМАТИЧЕСКИЙ ЗАПРОС ДАННЫХ - ПРИЛОЖЕНИЕ НЕ ВЫЛЕТАЕТ!
+        // if (tg) {
+        //     setTimeout(() => {
+        //         sendAction('get_user_data');
+        //     }, 500);
+        // }
 
-        // Слушаем ответы от бота
-        if (tg) {
-            tg.onEvent('message', function(event) {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.action === 'update_user_data') {
-                        window.updateUserData(data);
-                    }
-                } catch(e) {
-                    console.log('Ошибка парсинга:', e);
-                }
-            });
-        }
-
-        // Обновление данных
+        // Функция обновления данных (будет вызываться из бота, но пока не используется)
         window.updateUserData = function(data) {
+            console.log('Получены данные:', data);
             document.getElementById('userName').innerText = data.first_name || 'Пользователь';
             document.getElementById('balance').innerText = data.balance;
             
