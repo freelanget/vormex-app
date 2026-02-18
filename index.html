@@ -2,72 +2,18 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>VORMEX AI - ТЕСТ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        button {
-            background: white;
-            color: #764ba2;
-            border: none;
-            padding: 20px 40px;
-            font-size: 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 30px;
-            font-weight: bold;
-        }
-        button:hover {
-            transform: scale(0.95);
-        }
-        #status {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            font-size: 14px;
-        }
-    </style>
 </head>
 <body>
-    <h1>🚀 VORMEX AI</h1>
-    <h2>Тестовая версия</h2>
-    <p>Нажми кнопку для проверки связи с ботом</p>
-    
-    <button onclick="sendData()">📤 ОТПРАВИТЬ ТЕСТ</button>
-    
-    <div id="status">Ожидание...</div>
-
+    <h1>Тест</h1>
+    <button onclick="send()">НАЖМИ</button>
     <script>
         let tg = Telegram.WebApp;
         tg.expand();
-        
-        function sendData() {
-            document.getElementById('status').innerHTML = '⏳ Отправка...';
-            
-            try {
-                // Пробуем отправить данные
-                tg.sendData(JSON.stringify({action: "test_button"}));
-                document.getElementById('status').innerHTML = '✅ Отправлено! Закрываем...';
-                
-                // Пробуем закрыть
-                setTimeout(() => {
-                    tg.close();
-                }, 500);
-                
-            } catch (e) {
-                document.getElementById('status').innerHTML = '❌ Ошибка: ' + e;
-            }
+        function send() {
+            tg.sendData(JSON.stringify({test: "привет"}));
+            tg.close();
         }
-
-        // Проверяем, что Telegram Web App доступен
-        document.getElementById('status').innerHTML = '✅ Telegram Web App загружен, версия: ' + tg.version;
     </script>
 </body>
 </html>
