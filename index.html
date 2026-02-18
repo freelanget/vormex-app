@@ -26,6 +26,13 @@
         button:hover {
             transform: scale(0.95);
         }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -35,14 +42,32 @@
     
     <button onclick="sendData()">📤 ОТПРАВИТЬ ТЕСТ</button>
     
+    <div id="status">Ожидание...</div>
+
     <script>
         let tg = Telegram.WebApp;
         tg.expand();
         
         function sendData() {
-            tg.sendData(JSON.stringify({action: "test_button"}));
-            tg.close();
+            document.getElementById('status').innerHTML = '⏳ Отправка...';
+            
+            try {
+                // Пробуем отправить данные
+                tg.sendData(JSON.stringify({action: "test_button"}));
+                document.getElementById('status').innerHTML = '✅ Отправлено! Закрываем...';
+                
+                // Пробуем закрыть
+                setTimeout(() => {
+                    tg.close();
+                }, 500);
+                
+            } catch (e) {
+                document.getElementById('status').innerHTML = '❌ Ошибка: ' + e;
+            }
         }
+
+        // Проверяем, что Telegram Web App доступен
+        document.getElementById('status').innerHTML = '✅ Telegram Web App загружен, версия: ' + tg.version;
     </script>
 </body>
 </html>
