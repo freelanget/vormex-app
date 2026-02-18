@@ -25,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* ГЛАВНАЯ КАРТОЧКА */
         .main-card {
             background: rgba(10, 10, 20, 0.8);
             backdrop-filter: blur(10px);
@@ -63,7 +62,6 @@
             text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
         }
 
-        /* ПРОФИЛЬ */
         .profile-card {
             background: linear-gradient(145deg, #0f0f1a, #1a1030);
             border: 1px solid #2a1a3a;
@@ -165,7 +163,6 @@
             box-shadow: 0 0 10px #4a90e2;
         }
 
-        /* СЕТКА ФУНКЦИЙ */
         .functions-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -203,7 +200,6 @@
             color: #d0d0ff;
         }
 
-        /* МОДАЛЬНЫЕ ОКНА */
         .modal {
             display: none;
             position: fixed;
@@ -290,7 +286,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- ШАПКА -->
         <div class="main-card">
             <div class="header">
                 <div class="logo">
@@ -300,7 +295,6 @@
             </div>
         </div>
 
-        <!-- ПРОФИЛЬ -->
         <div class="profile-card">
             <div class="profile-row">
                 <div class="profile-avatar">👤</div>
@@ -351,7 +345,6 @@
             </div>
         </div>
 
-        <!-- СЕТКА ФУНКЦИЙ -->
         <div class="functions-grid">
             <div class="function-item" onclick="sendAction('open_pay')">
                 <div class="function-emoji">💰</div>
@@ -380,7 +373,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно для отзыва -->
     <div class="modal" id="reviewModal">
         <div class="modal-content">
             <h3>⭐ Оставить отзыв</h3>
@@ -392,7 +384,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно для поддержки -->
     <div class="modal" id="supportModal">
         <div class="modal-content">
             <h3>📞 Связаться с поддержкой</h3>
@@ -410,20 +401,16 @@
         if (tg) {
             tg.expand();
             tg.ready();
-            
-            // Устанавливаем цвета под твою тему
-            tg.setHeaderColor('#0a0a0f');
-            tg.setBackgroundColor('#0a0a0f');
         }
 
         function sendAction(action, data = {}) {
             if (tg) {
                 tg.sendData(JSON.stringify({action: action, ...data}));
-                tg.close();
+                // НЕ закрываем приложение сразу!
+                // tg.close();
             }
         }
 
-        // Модальные окна
         function openReviewsModal() {
             document.getElementById('reviewModal').style.display = 'flex';
         }
@@ -436,6 +423,7 @@
             const text = document.getElementById('reviewText').value;
             if (text.trim()) {
                 sendAction('send_review', {text: text});
+                closeReviewModal();
             }
         }
 
@@ -452,17 +440,17 @@
             const message = document.getElementById('supportMessage').value;
             if (message.trim()) {
                 sendAction('send_support', {name: name, message: message});
+                closeSupportModal();
             }
         }
 
-        // Запрос данных пользователя
-        if (tg) {
-            setTimeout(() => {
-                sendAction('get_user_data');
-            }, 500);
-        }
+        // Убираем автоматический запрос данных
+        // if (tg) {
+        //     setTimeout(() => {
+        //         sendAction('get_user_data');
+        //     }, 500);
+        // }
 
-        // Обновление данных
         window.updateUserData = function(data) {
             document.getElementById('userName').innerText = data.first_name || 'Пользователь';
             document.getElementById('balance').innerText = data.balance;
